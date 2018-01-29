@@ -1,19 +1,51 @@
 import React, {Component} from 'react';
 import './App.css';
 import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
+import Profile from './Profile.jsx';
+
 
 class App extends Component{
     
     constructor(props){
         super(props);
         this.state = {
-            query: ''
+            query: '',
+            artist: null,
+            tracks:[]
         }
     }
 
     search(){
-        console.log('this state', this.state)
+        const BASE_URL  = 'https://api.spotify.com/v1/search?';
+        let FETCH_URL = `${BASE_URL}q=${this.state.query}&type=artist&limit=1`;
+        const ALBUM_URL = 'https://api.spotify.com/v1/artists/'
+        var accessToken = 'BQBRQInzCuI9KzitsYBhtGjcfNuyOz1iG4TC2QqWMtxJjYGyNu0KFpGqiJJJ6dQ_NA-wsqP0j2FKcHmivOg-vZ6OrajEtvXSD5tKT-nmd7LQw9kPGBTGVWHctbDOvJuwchIKC4_NeYl-4EH8j9RWcwOFFaFwHaoz83U'
+
+        var myOptions = {
+            method: 'GET', 
+            headers:  {
+                'Authorization': 'Bearer ' + accessToken
+            },
+        mode: 'cors',
+        cache: 'default'
+        };
+
+        fetch(FETCH_URL, myOptions )
+        .then(response => response.json())
+        .then(json => {
+            const artist = json.artists.items[0];
+            this.setState({artist});
+            FETCH_URL = `${ALBUM_URL}${artist.id}/top-tracks?country=US&`;
+            fetch(FETCH_URL,myOptions)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                const {tracks} = json;
+                this.setState({tracks});
+            })
+        });
     }
+
     render(){
         return (
             <div className="App">
@@ -38,13 +70,19 @@ class App extends Component{
 
                   </FormGroup>
 
-                <div className="Profile">
-                    <div>Artist Picture</div>
-                    <div>Artist Name</div>
-                </div>
-                <div className="Gallery">
-                    Gallery
-                </div>
+                {
+                    this.state.artist !==null
+                    ?
+                    <div>
+                        <Profile 
+                            artist={this.state.artist}
+                        />
+                        <div className="Gallery">
+                            Gallery
+                        </div>
+                    </div>
+                    : <div></div>
+                }
             </div>
 
         )
