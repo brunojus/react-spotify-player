@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
 import Profile from './Profile.jsx';
-
+import Gallery from './Gallery.jsx';
 
 class App extends Component{
     
@@ -19,7 +19,7 @@ class App extends Component{
         const BASE_URL  = 'https://api.spotify.com/v1/search?';
         let FETCH_URL = `${BASE_URL}q=${this.state.query}&type=artist&limit=1`;
         const ALBUM_URL = 'https://api.spotify.com/v1/artists/'
-        var accessToken = 'BQBRQInzCuI9KzitsYBhtGjcfNuyOz1iG4TC2QqWMtxJjYGyNu0KFpGqiJJJ6dQ_NA-wsqP0j2FKcHmivOg-vZ6OrajEtvXSD5tKT-nmd7LQw9kPGBTGVWHctbDOvJuwchIKC4_NeYl-4EH8j9RWcwOFFaFwHaoz83U'
+        var accessToken = 'BQBbHBMbuFyEdGOQD00-RC9nt7UOKOYTgDmYABqd8ZuglG5zjsZ8_ZIyWAxp6uMhqn92V7lPFntPVwBWtFVylFKKiuFU2yvxLlDl-eUb45nO00G9OvVIe2gsMMV6ntYOZrBVyPoujTSKx0vTaKsY70K6Ai_kkTF-x4A'
 
         var myOptions = {
             method: 'GET', 
@@ -39,7 +39,6 @@ class App extends Component{
             fetch(FETCH_URL,myOptions)
             .then(response => response.json())
             .then(json => {
-                console.log(json)
                 const {tracks} = json;
                 this.setState({tracks});
             })
@@ -77,9 +76,9 @@ class App extends Component{
                         <Profile 
                             artist={this.state.artist}
                         />
-                        <div className="Gallery">
-                            Gallery
-                        </div>
+                        <Gallery
+                            tracks={this.state.tracks}
+                        />
                     </div>
                     : <div></div>
                 }
